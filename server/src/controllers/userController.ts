@@ -7,21 +7,21 @@ const bcrypt = require("bcrypt");
 type User = {
   firstName: string;
   lastName: string;
-  username: string;
+  email: string;
   password: string;
 };
 
 //Register User Api
 const registerUser = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, username, password } = req.body;
-    if (!firstName || !lastName || !username || !password) {
+    const { firstName, lastName, email, password } = req.body;
+    if (!firstName || !lastName || !email || !password) {
       res.status(400);
       throw new Error("Fileds cannot be empty");
     }
 
     const userExists = await db.user.findUnique({
-      where: { username },
+      where: { email },
     });
 
     if (userExists) {
@@ -34,7 +34,7 @@ const registerUser = async (req: Request, res: Response) => {
       data: {
         firstName,
         lastName,
-        username,
+        email,
         password: hashedPassword,
       },
     });
@@ -43,7 +43,7 @@ const registerUser = async (req: Request, res: Response) => {
         id: newuser.id,
         firstName: newuser.firstName,
         lastName: newuser.lastName,
-        username: newuser.username,
+        username: newuser.email,
       });
     } else {
       res.status(400);
@@ -57,12 +57,12 @@ const registerUser = async (req: Request, res: Response) => {
 //Login Api
 const authUser = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
-    const user = await db.user.findUnique({ where: { username } });
+    const { email, password } = req.body;
+    const user = await db.user.findUnique({ where: { email } });
     // console.log("1", user);
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid username" });
+      return res.status(401).json({ error: "Invalid email" });
     }
 
     const passwordmatch = await bcrypt.compare(password, user.password);
@@ -74,7 +74,7 @@ const authUser = async (req: Request, res: Response) => {
     if (passwordmatch) {
      res.status(201).json({
         id: user.id,
-        username: user.username,
+        username: user.email,
         token: generateToken(user.id),
       });
     }
@@ -87,5 +87,7 @@ const authUser = async (req: Request, res: Response) => {
 const checkMiddleware = (req: Request, res: Response) => {
   res.send("Welcome authuroized user!");
 };
+
+
 
 export { registerUser, authUser, checkMiddleware };
