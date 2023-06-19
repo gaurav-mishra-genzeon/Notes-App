@@ -2,6 +2,7 @@ import express,{ Express, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import user from './routes/userRoutes';
+import notes from './routes/notesRoutes';
 
 const app:Express = express();
 require('dotenv').config();
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api",user)
+app.use("/api",notes)
 
 const PORT = process.env.PORT || 3002;
 
