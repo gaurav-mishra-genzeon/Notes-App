@@ -12,10 +12,12 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
       token = req.headers.authorization.split(" ")[1];
       const decoded: any = jwt.verify(token, (process.env.JWT_SECRET_KEY as any));
       const id = decoded.id;
+      console.log(id);
       (req as any).user = await db.user.findUnique({
         where: { id },
       });
       (req as any).user.password = undefined;
+      (req as any).userId=id;
       next();
     } catch (err) {
       res.status(401);
