@@ -2,8 +2,12 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import Sign_img from './Sign_img'
+import { log } from 'console'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+
+    const history = useNavigate();
 
     const [inpval, setInpval] = useState({
         email: "",
@@ -36,9 +40,9 @@ const Login = () => {
 
         const getuserArr = localStorage.getItem("user")
         console.log(getuserArr);
-        
 
-        const {  email, password } = inpval;
+
+        const { email, password } = inpval;
 
         if (email === "") {
             alert("email field is required")
@@ -49,7 +53,21 @@ const Login = () => {
         } else if (password.length < 5) {
             alert("password length should be greater than five")
         } else {
-           
+            if (getuserArr && getuserArr.length) {
+                const userdata = JSON.parse(getuserArr)
+                //console.log(userdata);
+                const userlogin = userdata.filter((el: any, k: any) => {
+                    return el.email === email && el.password === password
+                });
+                // console.log(userlogin);
+                if (userlogin.length === 0) {
+                    alert("invalid details!! please enter valid details")
+                } else {
+                    console.log("user login successfully");
+                    localStorage.setItem("user_login", JSON.stringify(getuserArr))
+                    history("/dashboard")
+                }
+            }
         }
     }
 
@@ -61,7 +79,7 @@ const Login = () => {
                         <h3 className='text-center col-lg-6'>LOGIN</h3>
                         <Form>
 
-                          
+
                             <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
 
                                 <Form.Control type="email" name='email' onChange={getdata} placeholder="Enter email" />
@@ -72,7 +90,7 @@ const Login = () => {
 
                                 <Form.Control type="password" name='password' onChange={getdata} placeholder="Password" />
                             </Form.Group>
-                           
+
 
                             <Button variant="primary" className='col-lg-6' onClick={addData} style={{ background: "rgb(67, 185, 127)" }}>Submit</Button>
                         </Form>

@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 import Sign_img from './Sign_img'
 import { NavLink } from 'react-router-dom'
 
-const Homes = () => {
+const Home = () => {
 
     const [inpval, setInpval] = useState({
         firstName: "",
@@ -102,4 +102,4 @@ const Homes = () => {
     )
 }
 
-export default Homes
+export default Home
