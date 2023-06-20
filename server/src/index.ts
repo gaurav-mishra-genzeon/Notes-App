@@ -1,6 +1,5 @@
 import express,{ Express, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import user from './routes/userRoutes';
 import notes from './routes/notesRoutes';
 

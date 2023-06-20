@@ -4,12 +4,12 @@ import { db } from "../utils/db.server";
 import generateToken from "../config/generateToken";
 
 const bcrypt = require("bcrypt");
-type User = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+// type User = {
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   password: string;
+// };
 
 //Register User Api
 const registerUser = async (req: Request, res: Response) => {

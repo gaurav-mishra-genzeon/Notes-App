@@ -16,6 +16,7 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
         where: { id },
       });
       (req as any).user.password = undefined;
+      (req as any).userId= id;
       next();
     } catch (err) {
       res.status(401);
