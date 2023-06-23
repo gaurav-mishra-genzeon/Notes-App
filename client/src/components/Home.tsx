@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import Sign_img from './Sign_img'
-import { log } from 'console'
-import { useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
-const Login = () => {
-
-    const history = useNavigate();
+const Home = () => {
 
     const [inpval, setInpval] = useState({
+        firstName: "",
+        lastName: "",
         email: "",
         password: ""
     })
@@ -38,13 +37,14 @@ const Login = () => {
     const addData = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        const getuserArr = localStorage.getItem("user")
-        console.log(getuserArr);
+        const { firstName, lastName, email, password } = inpval;
 
-
-        const { email, password } = inpval;
-
-        if (email === "") {
+        if (firstName === "") {
+            alert("firstName field is required")
+        } else if (lastName === "") {
+            alert("lastName field is required")
+        }
+        else if (email === "") {
             alert("email field is required")
         } else if (!email.includes("@")) {
             alert("please enter valid email Address")
@@ -53,33 +53,29 @@ const Login = () => {
         } else if (password.length < 5) {
             alert("password length should be greater than five")
         } else {
-            if (getuserArr && getuserArr.length) {
-                const userdata = JSON.parse(getuserArr)
-                //console.log(userdata);
-                const userlogin = userdata.filter((el: any, k: any) => {
-                    return el.email === email && el.password === password
-                });
-                // console.log(userlogin);
-                if (userlogin.length === 0) {
-                    alert("invalid details!! please enter valid details")
-                } else {
-                    console.log("user login successfully");
-                    localStorage.setItem("user_login", JSON.stringify(getuserArr))
-                    history("/dashboard")
-                }
-            }
+            console.log("data added successfully");
+
+            localStorage.setItem("user", JSON.stringify([...data, inpval]))
         }
     }
-
     return (
         <>
             <div className="container mt-3">
                 <section className='d-flex justify-content-between'>
                     <div className="left_data mt-3 p-3" style={{ width: "100%" }}>
-                        <h3 className='text-center col-lg-6'>LOGIN</h3>
+                        <h3 className='text-center col-lg-6'>Registration</h3>
                         <Form>
 
+                            <Form.Group className="mb-3 col-lg-6" controlId="formBasicfistName">
 
+                                <Form.Control type="text" name='firstName' onChange={getdata} placeholder="Enter your firstName" />
+
+                            </Form.Group>
+                            <Form.Group className="mb-3 col-lg-6" controlId="formBasiclastName">
+
+                                <Form.Control type="text" name='lastName' onChange={getdata} placeholder="Enter your lastName" />
+
+                            </Form.Group>
                             <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
 
                                 <Form.Control type="email" name='email' onChange={getdata} placeholder="Enter email" />
@@ -90,11 +86,14 @@ const Login = () => {
 
                                 <Form.Control type="password" name='password' onChange={getdata} placeholder="Password" />
                             </Form.Group>
-
+                            {/* Button:{ value: string };
+                            <div>
+                                <input type="submit" value="submit" />
+                            </div> */}
 
                             <Button variant="primary" className='col-lg-6' onClick={addData} style={{ background: "rgb(67, 185, 127)" }}>Submit</Button>
                         </Form>
-                        <p className='mt-3'>Already Have an Account <span>Login</span></p>
+                        <p className='mt-3'>Already Have an Account? <span><NavLink to="/login">LOGIN</NavLink></span></p>
                     </div>
                     <Sign_img />
                 </section>
@@ -103,4 +102,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Home
