@@ -1,6 +1,9 @@
 import React from 'react'
 
-const EditModal = () => {
+const EditModal = ({editId,notes,setNotes}) => {
+  const updateHandler=()=>{
+    
+  }
   return (
     <>
       <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -27,7 +30,7 @@ const EditModal = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Edit Notes</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={updateHandler}>Edit Notes</button>
               
             </div>
           </div>

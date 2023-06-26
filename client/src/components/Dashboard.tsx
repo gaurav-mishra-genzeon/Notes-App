@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [title, settitle] = useState("")
   const [desc, setDesc] = useState("")
   const [notes, setNotes] = useState<any[]>([getNotesFromLs])
+  const [editId, seteditId] = useState<null | {message:String}> (null);
   localStorage.setItem("notes", JSON.stringify(notes))
 
 
@@ -50,9 +51,10 @@ const Dashboard = () => {
         logindata.length === 0 ? "error" :
           <>
 
-            <EditModal />
+            <EditModal editId={editId} notes={notes} setNotes={setNotes}/>
 
-            <Forms title={title} settitle={settitle} desc={desc} setDesc={setDesc} notes={notes} setNotes={setNotes} />
+            <Forms title={title} settitle={settitle} desc={desc} setDesc={setDesc} notes={notes} setNotes={setNotes}
+             />
 
             <div className='container'>
               <div className='row'>
@@ -66,7 +68,7 @@ const Dashboard = () => {
                       </div>
                     </div> : notes.map((element) => {
                       return (
-                        <Notes element={element} key={element.id} notes={notes} setNotes={setNotes}/>
+                        <Notes element={element} key={element.id} notes={notes} setNotes={setNotes} seteditId={seteditId}/>
                       )
                     })
 
