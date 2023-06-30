@@ -24,7 +24,7 @@ const postNotes= async (req: Request, res: Response) =>{
     const userId = (req as any).userId;
   // console.log(userId)
   const { title, content } = (req as any).body;
-  console.log(title, content);
+  // console.log(title, content);
     try{
         const notes = await db.note.create({
             data: {
@@ -45,25 +45,46 @@ const postNotes= async (req: Request, res: Response) =>{
 //Toggle status of the notes to done
 const doneNote=async(req: Request, res: Response)=>{
     const noteId = parseInt(req.params.id);
-    const status= await db.note.update({
+    try{
+       const status= await db.note.update({
       where:{
         id:noteId
       },
       data:{
         done:true
       }
-  
     })
+    res.status(201).send(status);
+  }catch(err){
+    console.log(err)
+    res.status(400).send("error")
   }
-  
+ }
+   
 //Delete a Note
 const deleteNote= async (req: Request, res: Response) =>{
     try{
         const noteId = parseInt(req.params.id);
-        await db.note.delete({
-          where: { id: noteId},
-        });
-        res.status(201).send("Note deleted");
+
+     // Check the status of the note
+    const note = await db.note.findUnique({
+      where: { id: noteId },
+    });
+    // console.log("1",note);
+    if ((note as any).done === false) {
+      await db.note.delete({
+        where: { id: noteId },
+      });
+      res.status(201).send("Note deleted");
+    } else {
+      res.status(400).send("This Note cannot be deleted");
+    }
+
+
+        // await db.note.delete({
+        //   where: { id: noteId},
+        // });
+        // res.status(201).send("Note deleted");
     }catch(err){
         console.log(err);
         res.status(500).send("Something went wrong");
@@ -75,14 +96,13 @@ const deleteNote= async (req: Request, res: Response) =>{
 const updateNote= async (req: Request, res: Response) =>{
     try{
         const noteId = parseInt(req.params.id);
-        const { title, content, done } = req.body;
+        const { title, content} = req.body;
     
         const updatedNote = await db.note.update({
           where: { id: noteId },
           data: {
             title,
             content,
-            done,
           },
         });
         res.status(200).send(updatedNote);
