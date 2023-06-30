@@ -1,98 +1,154 @@
-import React, { useEffect, useState } from 'react'
-
-
-import { Button, Form } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import Notes from './DashboardComp/Notes'
-import EditModal from './DashboardComp/EditModal'
-import Forms from './DashboardComp/Forms'
-
-
-
+import { useEffect, useState } from "react";
+import { Button, Pagination } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import Notes from "./DashboardComp/Notes";
+import Forms from "./DashboardComp/Forms";
+import axios from "axios";
+import authHeader from "./services/auth-header";
+import _ from "lodash";
+// import { fetchNotes } from "./api";
+export let fetchNotes;
+const pageSize = 2;
 const Dashboard = () => {
-
-  const [logindata, setLoginData] = useState([]);
-  console.log(logindata);
-  const [data, setData] = useState(["ravi", "sanket"])
   const history = useNavigate();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [notes, setNotes] = useState<any[]>([]);
+  const [done, setDone] = useState(false);
+  const [paginatedPosts, setPaginatedPosts] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-
-  const [title, settitle] = useState("")
-  const [desc, setDesc] = useState("")
-  const [notes, setNotes] = useState<any[]>([getNotesFromLs])
-  localStorage.setItem("notes", JSON.stringify(notes))
-
-
-  const details = () => {
-    const getuser = localStorage.getItem("user_login");
-    if (getuser && getuser.length) {
-      const user = JSON.parse(getuser)
-      console.log(user);
-      setLoginData(user);
-
-    }
-
-  }
-  const userlogout = () => {
-    localStorage.removeItem("user_login")
-    history("/")
-  }
   useEffect(() => {
-    details();
-  }, [])
+    fetchNotes();
+  },[]);
+
+
+  const url = `http://localhost:3001/api/notes`;
+
+  const pageCount = notes ? Math.ceil(notes.length / pageSize) : 0;
+  if (pageCount === 1) {
+    return null;
+  }
+  const pages = _.range(1, pageCount);
+
+  const paginationFunc=(pageNo)=>{
+        setCurrentPage(pageNo);
+        const startIndex= (pageNo-1)* pageSize
+        const paginatedPosts = _(notes).slice(startIndex).take(pageSize).value()
+        setPaginatedPosts(paginatedPosts)
+  }
+
+  //GET Notes
+fetchNotes = async () => {
+    try {
+      const res = await axios.get(`${url}`, { headers: authHeader() });
+      if (res.data) {
+        setNotes(res.data.notes);
+        setPaginatedPosts(_(res.data.notes).slice(0).take(pageSize).value());
+      }
+    } catch (error) {
+      console.error("Error getting notes:", error);
+    }
+  };
+
+  // Delete Notes
+  const deleteNote = async (id) => {
+    try {
+      await axios.delete(`${url}/${id}`, { headers: authHeader() });
+      setNotes(notes.filter((note) => note.id !== id));
+      fetchNotes();
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
+  };
+
+  //Status Note
+  const statusNote = async (id) => {
+    // try {
+    //  let res= await axios.patch(`http://localhost:3001/api/notes/status/${id}`,{headers:authHeader()});
+    //  console.log(res.data)
+    // } catch (error) {
+    //   console.error('Error toggling note:', error);
+    // }
+  };
+
+  const removeHandler = (id) => {
+    deleteNote(id);
+  };
+
+  const statusHandler = (id) => {
+    statusNote(id);
+  };
+
+  // const userlogout = () => {
+  //   localStorage.removeItem("token");
+  //   history("/login");
+  // };
 
   return (
-
     <div>
+      <>
+        <Forms
+          title={title}
+          setTitle={setTitle}
+          content={content}
+          setContent={setContent}
+          notes={notes}
+          setNotes={setNotes}
+        />
 
-      {/* <Forms/> */}
-      {
-        logindata.length === 0 ? "error" :
-          <>
-
-            <EditModal />
-
-            <Forms title={title} settitle={settitle} desc={desc} setDesc={setDesc} notes={notes} setNotes={setNotes} />
-
-            <div className='container'>
-              <div className='row'>
-                <div className='col-md-10'>
-                  <h1 className='mb-3'>Your Notes</h1>
-                  {
-                    notes.length === 0 ? <div className="card mb-3">
-                      <div className="card-body">
-                        <h5 className="card-title">Message</h5>
-                        <p className="card-text">No notes are Available for Reading</p>
-                      </div>
-                    </div> : notes.map((element) => {
-                      return (
-                        <Notes element={element} key={element.id} notes={notes} setNotes={setNotes}/>
-                      )
-                    })
-
-                  }
+        <div className="container">
+          <div className="row">
+            <div className="col-md-10">
+              <h1 className="mb-3">Your Notes</h1>
+              {notes.length === 0 ? (
+                <div className="card mb-3">
+                  <div className="card-body">
+                    <h5 className="card-title">Message</h5>
+                    <p className="card-text">
+                      No notes are Available for Reading
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+               notes.map((element) => {
+                  return (
+                    <Notes
+                      key={element.id}
+                      id={element.id}
+                      title={element.title}
+                      content={element.content}
+                      removeHandler={removeHandler}
+                      notes={notes}
+                      setNotes={setNotes}
+                      statusHandler={statusHandler}
+                      done={done}
+                      setDone={setDone}
+                    />
+                  );
+                })
+              )}
             </div>
-            <Button onClick={userlogout}>LogOut</Button>
-           
-
-
-          </>
-      }
-
-
+          </div>
+        </div>
+        <nav className="d-flex justify-content-center">
+          <ul className="pagination">
+            {pages.map((page) => (
+              <li
+                className={
+                  page === currentPage ? "page-item active" : "page-item"
+                }
+              >
+                <p  onClick={()=>paginationFunc(page)} className="page-link">{page}</p>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        {/* <Pagination notes={notes} setNotes={setNotes}/> */}
+        {/* <Button className="ml-auto" onClick={userlogout}>LogOut</Button> */}
+      </>
     </div>
-  )
-  function getNotesFromLs() {
-    const note = JSON.parse(localStorage.getItem("notes") ||'{}');
-  if(note){
-      return note
-    }else{
-      return [];
-    }
-  }
+  );
+};
 
-}
-
-export default Dashboard
+export default Dashboard;
