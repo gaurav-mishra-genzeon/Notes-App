@@ -1,31 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Switch } from "antd"
 import {  useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import authHeader from '../components/services/auth-header';
 
+const url = `http://localhost:3001/api/notes`;
 const Notes = ({ title,content,removeHandler,id,notes,setNotes,statusHandler,done,setDone }) => {
+      const[status,setStatus]= useState("")
+
+     useEffect(()=>{
+           fetchNotesbyId() 
+     },[])
+  const fetchNotesbyId = async () => {
+            try {
+              const res = await axios.get(`${url}/${id}`, { headers: authHeader() });
+            console.log(res.data.note)
+            //  if(res.data.note.done===true)
+            //  {
+            //    setStatus(true)
+            //  }
+            //  console.log(status)
+            } catch (error) {
+              console.error("Error getting notes:", error);
+            }
+          };
 
     const nav= useNavigate()
-    const[status,setStatus]= useState(false)
 
-    const statusFunc=(check)=>{
-        statusHandler(id)
-          console.log(check)
-          if(check===true)
-          {
-            setStatus(true)
-          }
-    }
-    // console.log(element);
-
-
-//     const removeHandler=(id)=>{
-// const  newNotes=notes.filter((elm)=>{
-//     if(elm.id!==id){
-//         return elm
-//     }
-//  })
-//  setNotes(newNotes)
-//     }
     return (
         <>
             <div className="card mb-3">
@@ -35,15 +36,13 @@ const Notes = ({ title,content,removeHandler,id,notes,setNotes,statusHandler,don
                   
           <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
                    onClick={() => nav(`/dashboard/${id}`,{state:{notes,setNotes}})}>
-
-                    {/* <Link to={`/dashboard/${id}`}></Link> */}
                         Edit
                     </button>
                     <button className="btn btn-danger mx-2" onClick={() => {
                         removeHandler(id)
                     }}>Delete</button>
-
-             <Switch disabled={status} onClick={statusFunc} defaultChecked={false} checkedChildren="DONE" unCheckedChildren="NOT DONE" />
+                     
+             <Switch  defaultChecked={false} checkedChildren="DONE" unCheckedChildren="NOT DONE" />
                 </div>
             </div>
         </>

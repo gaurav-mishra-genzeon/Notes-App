@@ -1,11 +1,11 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Header from "./components/Header";
-import Home from "./components/Home";
+import Header from "./components/Navbar/Header";
+import Home from "./components/Signup/Home";
 import { Routes, Route} from "react-router-dom";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Edit from "./components/DashboardComp/EditPage";
+import Login from "./Login/Login";
+import Dashboard from "./components/DashboardComp/Dashboard";
+import Edit from "./components/EditPage/EditPage";
 // import PrivateRoute from "./components/PrivateRoute";
 // import { useContext, useEffect } from "react";
 // import { AppContext } from "./components/context/authContext";
@@ -25,7 +25,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

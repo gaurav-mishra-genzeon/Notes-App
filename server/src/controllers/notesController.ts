@@ -41,9 +41,7 @@ const getNotesbyId = async (req: Request, res: Response) => {
 //Post All Notes
 const postNotes = async (req: Request, res: Response) => {
   const userId = (req as any).userId;
-  // console.log(userId)
   const { title, content } = (req as any).body;
-  // console.log(title, content);
   try {
     const notes = await db.note.create({
       data: {
@@ -64,8 +62,6 @@ const postNotes = async (req: Request, res: Response) => {
 const doneNote = async (req: Request, res: Response) => {
   try {
     const noteId = parseInt(req.params.id);
-    console.log("check", noteId);
-
     const note = await db.note.findUnique({
       where: { id: noteId },
     });

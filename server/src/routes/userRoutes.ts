@@ -1,5 +1,4 @@
 import { authUser, registerUser,checkMiddleware } from "../controllers/userController";
-// import authenticateToken from "../middleware/authMiddlware";
 
 const express = require('express');
 const user= express.Router();

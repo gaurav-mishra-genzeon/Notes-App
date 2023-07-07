@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const Edit = () => {
-  const { state } = useLocation();
   const { id } = useParams();
   const nav = useNavigate();
   const [title, setTitle] = useState("");

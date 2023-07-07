@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button, Pagination } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Notes from "./DashboardComp/Notes";
-import Forms from "./DashboardComp/Forms";
+import Forms from "../../Notes/Forms";
 import axios from "axios";
-import authHeader from "./services/auth-header";
+import authHeader from "../services/auth-header";
 import _ from "lodash";
-// import { fetchNotes } from "./api";
+import Notes from "../../Notes/Notes";
+
 export let fetchNotes;
-const pageSize = 2;
+const pageSize = 4;
 const Dashboard = () => {
   const history = useNavigate();
   const [title, setTitle] = useState("");
@@ -44,7 +44,7 @@ fetchNotes = async () => {
       const res = await axios.get(`${url}`, { headers: authHeader() });
       if (res.data) {
         setNotes(res.data.notes);
-        setPaginatedPosts(_(res.data.notes).slice(0).take(pageSize).value());
+        // setPaginatedPosts(_(res.data.notes).slice(0).take(pageSize).value());
       }
     } catch (error) {
       console.error("Error getting notes:", error);
@@ -64,12 +64,13 @@ fetchNotes = async () => {
 
   //Status Note
   const statusNote = async (id) => {
-    // try {
-    //  let res= await axios.patch(`http://localhost:3001/api/notes/status/${id}`,{headers:authHeader()});
-    //  console.log(res.data)
-    // } catch (error) {
-    //   console.error('Error toggling note:', error);
-    // }
+    console.log("Status",id);
+    try {
+     await axios.patch(`${url}/status/${id}`);
+   
+    } catch (error) {
+      console.error('Error toggling note:', error);
+    }
   };
 
   const removeHandler = (id) => {
@@ -79,11 +80,6 @@ fetchNotes = async () => {
   const statusHandler = (id) => {
     statusNote(id);
   };
-
-  // const userlogout = () => {
-  //   localStorage.removeItem("token");
-  //   history("/login");
-  // };
 
   return (
     <div>
@@ -118,11 +114,12 @@ fetchNotes = async () => {
                       id={element.id}
                       title={element.title}
                       content={element.content}
+                      // status={element.done}
                       removeHandler={removeHandler}
                       notes={notes}
                       setNotes={setNotes}
                       statusHandler={statusHandler}
-                      done={done}
+                      done={element.done}
                       setDone={setDone}
                     />
                   );
