@@ -1,19 +1,26 @@
-Notes Application
+# Notes Application
 
-Registration Page
-Login Page
-Notes Listing Page with Pagination
-Notes Add Page
-Notes Edit Page
-Notes Delete Page- Notes which are not done
-Option to mark Done/Note Done.
+## Features
 
-Users can see the notes only when they Login. And notes are private for each user. Other users cannot see my notes and vice versa.
+- Registration Page
+- Login Page
+- Notes Listing with Pagination
+- Notes Add Page
+- Notes Edit Page
+- Notes Status done/not done
+- Notes Delete Notes which are not done
+- Option to mark Done/Note Done.
 
-Tech Stacks:
+![Screenshot (25)](https://github.com/gaurav-mishra-genzeon/Notes-App/assets/134056112/f42cb80b-80f3-4770-b831-cca62cdfc557)
+![Screenshot (26)](https://github.com/gaurav-mishra-genzeon/Notes-App/assets/134056112/8c44cbce-18a5-489a-8c29-1608414c9cae)
 
-Node JS API for Backend with Express framework
-Prisma as the ORM and Postgres SQL as database
-React for Frontend
-Typescript for both Frontend and Backend
-Use JWT Tokens for authentication
+![Screenshot (28)](https://github.com/gaurav-mishra-genzeon/Notes-App/assets/134056112/8aac4ba4-0610-4ffd-9ee2-d4d583f6a401)
+
+## Tech Stack
+
+1. Node JS
+2. Express 
+2. Prisma 
+3. React 
+4. Typescript 
+6. JWT 
